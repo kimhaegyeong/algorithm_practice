@@ -1,0 +1,22 @@
+<!-- 0.0009 ~ 0.001 중 랜덤한 숫자를 출력하시오
+ 앞에 음수 양수 표시 또한 랜덤하게 붙는다
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<script>
+	console.log(random(0.0009, 0.001));
+	
+	function random(min, max) {		
+		var randomTotoal = (Math.random() * (max - min) + min) * Math.pow(-1, (Math.floor(Math.random() * 10) + 1));
+
+		return randomTotoal;
+	}
+	
+</script>
+</body>
+</html>
