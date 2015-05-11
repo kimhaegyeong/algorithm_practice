@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+
+compileJava {
+  sourceCompatibility = 1.8
+  options.encoding = 'UTF-8'
+}
+
+eclipse {
+  wtp {
+    facet {
+      facet name:'jst.web', version:'3.0'
+    }
+  }
+}
+
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {  
+  compile 'net.sourceforge.jexcelapi:jxl:2.6.12'
+  compile 'org.quartz-scheduler:quartz:2.2.1' 
+  compile 'org.slf4j:slf4j-log4j12:1.7.12'
+  compile 'log4j:log4j:1.2.17'
+
+ 
+}
