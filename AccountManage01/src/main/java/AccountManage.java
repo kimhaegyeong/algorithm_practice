@@ -21,6 +21,17 @@ public class AccountManage {
 	static int msgInt;
 
 	public static void main(String[] args) {
+		// 스케줄러 
+		MyScheduler scheduler = new MyScheduler();
+		
+		try {
+			scheduler.run();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// 계좌 관리 시스템 
 		while (true) {
 			System.out.println("<<계좌 관리 시스템>>");
 			System.out.println("1. 계좌 정보 등록");
