@@ -40,6 +40,7 @@ public class AccountManage {
 			System.out.println("4. 계좌 정보 삭제");
 			System.out.println("5. 입출금");
 			System.out.println("6. 입출금 히스토리 목록 출력");
+			System.out.println("7. 지정된 시간에 메일로 발송하기");
 
 			System.out.print("이용할 서비스 입력 : ");
 			msgInt = scan.nextInt();
