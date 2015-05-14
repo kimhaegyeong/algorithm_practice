@@ -1,19 +1,11 @@
+package accountManage02;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Properties;
 import java.util.Scanner;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import jxl.Workbook;
 import jxl.write.Label;
@@ -22,10 +14,6 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 public class AccountManage {
 	static ArrayList<Account> list = new ArrayList<Account>();
 
@@ -33,11 +21,8 @@ public class AccountManage {
 	static String msgString;
 	static int msgInt;
 
-	// 전역 변수로 쓰고 싶지 않지만.. 어디에다가 써야될지 모르겠음 ㅜㅡ
-	static String mail;
-
-	public static void main(String[] args) {
-		// 계좌 관리 시스템
+	public static void main(String[] args) {	
+		// 계좌 관리 시스템 
 		while (true) {
 			System.out.println("<<계좌 관리 시스템>>");
 			System.out.println("1. 계좌 정보 등록");
@@ -84,22 +69,23 @@ public class AccountManage {
 
 	private static void sendMail_AccountHistory() {
 		scan.nextLine();
-
-		System.out.print("발송할 시간을 다음과 같은 형식으로 입력하세요. " + "hhmm : ");
+		
+		System.out.print("발송할 시간을 다음과 같은 형식으로 입력하세요. "
+				+ "hhmm : ");
 		String time = scan.nextLine();
-
+		
 		System.out.print("발송할 이메일 주소를 입력하세요. : ");
-		mail = scan.nextLine();
-
-		// 스케줄러
-		MyScheduler scheduler = new MyScheduler(time);
-
+		String mail = scan.nextLine();
+		
+		// 스케줄러 
+		MyScheduler scheduler = new MyScheduler(time, mail);
+		
 		try {
 			scheduler.run();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
 
 	private static void printAccountHistory() {
@@ -446,7 +432,7 @@ public class AccountManage {
 
 		for (Account account : list) {
 
-			System.out.printf("%03d\t%s\t%s\t%s\t%s\n", account.getNum(),
+			System.out.printf("%03d\t%s\t%s\t%s\t%s", account.getNum(),
 					account.getName(), account.getBankName(),
 					account.getBankPhone(), account.getBalance());
 		}
@@ -454,75 +440,6 @@ public class AccountManage {
 		System.out.println("");
 
 	}
-
-	// google stmp 하루에 몇개 정도 밖에 못 사용.
-	// err : 535-5.7
-	// https://www.digitalocean.com/community/questions/unable-to-send-mail-through-smtp-gmail-com
-	public class SendingMail implements Job {
-
-		@Override
-		public void execute(JobExecutionContext arg0)
-				throws JobExecutionException {
-			Properties props = new Properties();
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.socketFactory.port", "465");
-			props.put("mail.smtp.socketFactory.class",
-					"javax.net.ssl.SSLSocketFactory");
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.port", "465");
-
-			Session session = Session.getDefaultInstance(props,
-					new javax.mail.Authenticator() {
-						protected PasswordAuthentication getPasswordAuthentication() {
-							// 구글 아이디, 비번.
-							return new PasswordAuthentication("sianluv704",
-									"dkfmaekdns&42");
-						}
-					});
-			
-			try {
-
-				Message message = new MimeMessage(session);
-				// 보내는 사람
-				message.setFrom(new InternetAddress("schema9@gmail.com"));
-				// 받는 사람.
-				message.setRecipients(Message.RecipientType.TO,
-						InternetAddress.parse(mail));
-				// 제목
-				message.setSubject("[Testing Subject] 계좌정보");
-
-				String temp = null;
-				int sum = 0;
-				for (Account oneAccount : list) {
-					for (History oneHistory : oneAccount.getHistroys()) {
-						temp += oneAccount.getNum() + "\t"
-								+ oneAccount.getName() + "\t"
-								+ oneAccount.getBankName() + "\t"
-								+ oneAccount.getBankPhone() + "\t"
-								+ oneAccount.getBalance() + "\n";
-						
-						sum += oneAccount.getBalance();
-					}
-				}
-
-				// 내용
-				message.setText("------------ 계좌 정보 -----------------\n\n" 
-						+ "계좌번호\t이름\t은행명\t은행번호\t잔액\n"
-						+ temp 
-						+ "\n잔액의 합계 : " 
-						+ sum);
-
-				Transport.send(message);
-
-				System.out.println("Sended Mail");
-
-			} catch (MessagingException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-	}
-
 }
 
 /**

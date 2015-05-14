@@ -15,6 +15,13 @@
  * 
  */
 
+package quartz.test02;
+
+/*
+ *  코드 변경
+ *  시간입력을 String 형태로 
+ */
+
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -30,19 +37,16 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import accountManage02.SendingMail;
-
-public class MyScheduler {
-	private int hour;
-	private int minute;
-
-	public MyScheduler(String time) {
-		this.hour = Integer.parseInt(time.substring(0, 2));
-		this.minute = Integer.parseInt(time.substring(2, 4));	
-	}
+/**
+ * This Example will demonstrate all of the basics of scheduling capabilities of
+ * Quartz using Cron Triggers.
+ * 
+ * @author Bill Kratzer
+ */
+public class test02 {
 
 	public void run() throws Exception {
-		Logger log = LoggerFactory.getLogger(MyScheduler.class);
+		Logger log = LoggerFactory.getLogger(test02.class);
 
 		log.info("------- Initializing -------------------");
 
@@ -59,19 +63,23 @@ public class MyScheduler {
 		// 시간 표시
 		// http://www.quartz-scheduler.org/generated/2.2.1/html/qs-all/#page/Quartz_Scheduler_Documentation_Set%2Fco-trg_crontriggers.html
 		// job1 하루마다
-		JobDetail job = newJob(SendingMail.class).withIdentity("job1", "group1")
+
+		// job 1 will run every 20 seconds
+		JobDetail job = newJob(SimpleJob.class).withIdentity("job1", "group1")
 				.build();
 
-		String time = "0 " + minute + " " + hour + " * * ?";
-				
-		// cronSchedule(초 분 시간 날짜 달 요일 연도)
+		
+		//String time = "0 4 0 * * ?";  
+		String time = "0 5 0" + " * * ?";  
+ 
 		CronTrigger trigger = newTrigger().withIdentity("trigger1", "group1")
 				.withSchedule(cronSchedule(time)).build();
 
 		Date ft = sched.scheduleJob(job, trigger);
 		log.info(job.getKey() + " has been scheduled to run at: " + ft
 				+ " and repeat based on expression: "
-				+ trigger.getCronExpression());		
+				+ trigger.getCronExpression());
+
 
 		log.info("------- Starting Scheduler ----------------");
 
@@ -100,4 +108,11 @@ public class MyScheduler {
 		log.info("Executed " + metaData.getNumberOfJobsExecuted() + " jobs.");
 
 	}
+
+	public static void main(String[] args) throws Exception {
+
+		test02 example = new test02();
+		example.run();
+	}
+
 }

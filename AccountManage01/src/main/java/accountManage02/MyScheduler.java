@@ -1,3 +1,4 @@
+package accountManage02;
 /* 
  * Copyright 2005 - 2009 Terracotta, Inc. 
  * 
@@ -30,15 +31,18 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import accountManage02.SendingMail;
+import quartz.test02.SimpleJob;
 
 public class MyScheduler {
 	private int hour;
 	private int minute;
+	private String mail;
 
-	public MyScheduler(String time) {
+	public MyScheduler(String time, String mail) {
 		this.hour = Integer.parseInt(time.substring(0, 2));
 		this.minute = Integer.parseInt(time.substring(2, 4));	
+
+		this.mail = mail;
 	}
 
 	public void run() throws Exception {
