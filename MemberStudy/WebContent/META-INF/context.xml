@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context>
+	<Resource name="jdbc/kh"
+		auth="Container"						
+		type="javax.sql.DataSource"				
+		driverClassName="oracle.jdbc.driver.OracleDriver"
+		loginTimeout="10"		
+		maxWait="5000"
+		username="khpm"
+		password="khpm"
+		testOnBorrow="true"
+		url="jdbc:oracle:thin:@localhost:1521:xe"
+	/>
+</context>
+
+<!-- 
+	페이지마다 db 처리를 위해 반복되는 코드가 존재한다
+	페이지마다 JDBC 연결 코드가 존재할 경우 - 사용자가 접근할 때마다 db와의 컨넥션이 생성된다
+	-> Connection Pool
+		DB와의 커넥션을 한정된 갯수만큼 유지관리함
+		커넥션의 과증가로 인한 서버의 과부하를 막을 수 있다
+	
+	Connetion Pool은
+	jdk 1.7 이후로 추가됨
+	
+	그러나 스프링에서 사용할 때는 Connection Pool의 라이브러리 jar파일을 추가해야 한다
+	
+	셋팅 방법 (2가지)
+	1. 파일 추가
+		Tomcat 8.0\conf\
+		이클립스의 경우에는 Servers\Tomcat 8.0***\server.xml 에서 셋팅 추가
+		정석의 셋팅 방법
+		
+		단점 : 
+			이클립스를 사용하면
+			server.xml 파일에 - <context docBase="JSP"... /> 코드가 자동으로 생성된다
+			이 안에 셋팅에 필요한 코드를 추가하여야 한다
+			그러나 프로젝트를 war로 압축하고 재생성했을 때 <context docBase="JSP" ../>의 셋팅 내용이 사라진다
+			새롭게 impot 할 때마다 다시 셋팅해야 한다
+	2. META-INF\context.xml
+		<context> ...</context>
+		코드 추가
+		
+		그러나 정식 셋팅 방법은 아니다 	
+ 
+ <Resource name="jdbc/kh"					//
+		auth="Container"					//				
+		type="javax.sql.DataSource"			// 변경되면 안됨
+		driverClassName="oracle.jdbc.driver.OracleDriver"
+		loginTimeout="10"					// 대기요청 횟수
+		maxWait="5000"						// 대기요청 후 대기시간
+		username="kham"
+		password="kham"
+		testOnBorrow="true"
+		url="jdbc:oracle:thin:@localhost:1521:xe"
+	/>
+	
+	
+ -->
